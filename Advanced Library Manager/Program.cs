@@ -15,13 +15,12 @@ namespace LibraryApp
 
             Book.InitializeDatabase();
 
-
-            var newBook = new Book()
+            var newBook = new Book
             {
-                Title = "Harry Potter",
-                Author = "J.K. Rowling",
-                ISBN = "12345678910",
-                Copies = 5
+                Author = "Dom",
+                Title = "Test Book",
+                Copies = 5,
+                ISBN = "123453958292"
             };
             Book.AddBook(newBook);
 
@@ -30,6 +29,8 @@ namespace LibraryApp
             {
                 Console.WriteLine($"Title: {book.Title}, Author: {book.Author}, ISBN: {book.ISBN}, Quantity: {book.Copies}");
             }
+
+            
         }
 
     }

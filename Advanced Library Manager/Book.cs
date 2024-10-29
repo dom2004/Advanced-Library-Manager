@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Advanced_Library_Manager
 {
     public class Book
     {
-        private static string connectionString = "Data source=C:\\Users\\magie\\source\\repos\\Advanced-Library-Manager\\Advanced Library Manager\\Data\\library.db";
+        private static string connectionString = @"Data Source=C:\Users\magie\source\repos\Advanced-Library-Manager\Advanced Library Manager\Data\library.db";
 
         public int ID { get; set; }
         public string Title { get; set; }
@@ -24,31 +21,43 @@ namespace Advanced_Library_Manager
                 connection.Open();
                 var createDbCmd = connection.CreateCommand();
                 createDbCmd.CommandText = @"
-            CREATE TABLE IF NOT EXISTS Books (
-                Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                Title TEXT NOT NULL,
-                Author TEXT NOT NULL,
-                ISBN TESXT NOT NULL,
-                Copies INTEGER NOT NULL
-            );";
+                CREATE TABLE IF NOT EXISTS Books (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Title TEXT NOT NULL,
+                    Author TEXT NOT NULL,
+                    ISBN TEXT NOT NULL,
+                    Copies INTEGER NOT NULL
+                );";
                 createDbCmd.ExecuteNonQuery();
             }
         }
 
         public static void AddBook(Book book)
         {
-            using (var connection = new SQLiteConnection(connectionString))
+            try
             {
-                connection.Open();
-                var addToDbCmd = connection.CreateCommand();
-                addToDbCmd.CommandText = @"
-                  INSERT INTO Books (Title, Author, ISBN, Copies)
-                  VALUES ($title, $author, $ISBN, $copies)";
-                addToDbCmd.Parameters.AddWithValue("$title", book.Title);
-                addToDbCmd.Parameters.AddWithValue("$author", book.Author);
-                addToDbCmd.Parameters.AddWithValue("$isbn", book.ISBN);
-                addToDbCmd.Parameters.AddWithValue("$copies", book.Copies);
-                addToDbCmd.ExecuteNonQuery();
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    var addToDbCmd = connection.CreateCommand();
+                    addToDbCmd.CommandText = @"
+                        INSERT INTO Books (Title, Author, ISBN, Copies)
+                        VALUES ($title, $author, $isbn, $copies)";
+
+                    addToDbCmd.Parameters.AddWithValue("$title", book.Title);
+                    addToDbCmd.Parameters.AddWithValue("$author", book.Author);
+                    addToDbCmd.Parameters.AddWithValue("$isbn", book.ISBN);
+                    addToDbCmd.Parameters.AddWithValue("$copies", book.Copies);
+                    addToDbCmd.ExecuteNonQuery();
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite Exception: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"General Exception: {ex.Message}");
             }
         }
 
@@ -82,32 +91,83 @@ namespace Advanced_Library_Manager
 
         public static void UpdateBook(Book book)
         {
-            using (var connection = new SQLiteConnection(connectionString))
+            try
             {
-                connection.Open();
-                var updateDbCmd = connection.CreateCommand();
-                updateDbCmd.CommandText = @"
-                  UPDATE Books
-                  SET Title = $title, Author = $author, $ISBN, Copies = $copies
-                  WHERE ID = $id";
-                updateDbCmd.Parameters.AddWithValue("$id", book.ID);
-                updateDbCmd.Parameters.AddWithValue("$title", book.Title);
-                updateDbCmd.Parameters.AddWithValue("$author", book.Author);
-                updateDbCmd.Parameters.AddWithValue("$isbn", book.ISBN);
-                updateDbCmd.Parameters.AddWithValue("$copies", book.Copies);
-                updateDbCmd.ExecuteNonQuery();
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    var updateDbCmd = connection.CreateCommand();
+                    updateDbCmd.CommandText = @"
+                        UPDATE Books
+                        SET Title = $title, Author = $author, ISBN = $isbn, Copies = $copies
+                        WHERE Id = $id";
+
+                    updateDbCmd.Parameters.AddWithValue("$id", book.ID);
+                    updateDbCmd.Parameters.AddWithValue("$title", book.Title);
+                    updateDbCmd.Parameters.AddWithValue("$author", book.Author);
+                    updateDbCmd.Parameters.AddWithValue("$isbn", book.ISBN);
+                    updateDbCmd.Parameters.AddWithValue("$copies", book.Copies);
+                    updateDbCmd.ExecuteNonQuery();
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite Exception: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"General Exception: {ex.Message}");
             }
         }
 
         public static void DeleteBook(int ID)
         {
-            using (var connection = new SQLiteConnection(connectionString))
+            try
             {
-                connection.Open();
-                var deleteDbCmd = connection.CreateCommand();
-                deleteDbCmd.CommandText = "DELETE FROM Books WHERE ID = $id";
-                deleteDbCmd.Parameters.AddWithValue("id", ID);
-                deleteDbCmd.ExecuteNonQuery();
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    var deleteDbCmd = connection.CreateCommand();
+                    deleteDbCmd.CommandText = "DELETE FROM Books WHERE Id = $id";
+                    deleteDbCmd.Parameters.AddWithValue("$id", ID);
+                    deleteDbCmd.ExecuteNonQuery();
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite Exception: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"General Exception: {ex.Message}");
+            }
+        }
+
+        public static void ClearDB()
+        {
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    var deleteDbCmd = connection.CreateCommand();
+                    deleteDbCmd.CommandText = "DELETE FROM Books";
+                    deleteDbCmd.ExecuteNonQuery();
+
+                    var resetCmd = connection.CreateCommand();
+                    resetCmd.CommandText = "DELETE FROM sqlite_sequence WHERE name = 'Books';";
+                    resetCmd.ExecuteNonQuery();
+
+                    Console.WriteLine("Database has been cleared!");
+                }
+            }
+            catch(SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite Exception: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"General Exception: {ex.Message}");
             }
         }
     }
