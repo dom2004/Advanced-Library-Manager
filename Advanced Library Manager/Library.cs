@@ -8,5 +8,7 @@ namespace Advanced_Library_Manager
 {
     internal class Library
     {
+
+
     }
 }
