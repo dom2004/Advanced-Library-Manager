@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using Advanced_Library_Manager.Menus;
 
 namespace Advanced_Library_Manager
 {
@@ -13,6 +14,10 @@ namespace Advanced_Library_Manager
         public string Author { get; set; }
         public int Copies { get; set; }
         public string ISBN { get; set; }
+
+        private List<Book> books;
+
+        public IEnumerable<Book> Books { get { return books; } }
 
         public static void InitializeDatabase()
         {
@@ -169,6 +174,7 @@ namespace Advanced_Library_Manager
             {
                 Console.WriteLine($"General Exception: {ex.Message}");
             }
+
         }
     }
 }
