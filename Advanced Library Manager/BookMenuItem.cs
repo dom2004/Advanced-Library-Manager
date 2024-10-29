@@ -20,6 +20,7 @@ namespace Advanced_Library_Manager
         {
             _menuItems.Clear();
             _menuItems.Add(new AddNewBook(_Book));
+            _menuItems.Add(new DeleteBook(_Book));
             _menuItems.Add(new DisplayAllBooks(_Book.Books));
             _menuItems.Add(new ClearDatabase(_Book.Books));
             _menuItems.Add(new ExitMenu(this));

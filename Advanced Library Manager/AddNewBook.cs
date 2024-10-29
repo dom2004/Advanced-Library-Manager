@@ -23,13 +23,22 @@ namespace Advanced_Library_Manager
 
         public override void Select()
         {
+            Console.WriteLine("Please enter the book title");
+            string title = Console.ReadLine();
+            Console.WriteLine("Please enter the book author");
+            string author = Console.ReadLine();
+            Console.WriteLine("Please enter the ISBN");
+            string ISBN = Console.ReadLine();
+            Console.WriteLine("Please enter the quantity");
+            string input = Console.ReadLine();
+            int copies = int.Parse(input);
 
             var newBook = new Book
             {
-                Title = "C# in Depth",
-                Author = "Jon Skeet",
-                ISBN = "9781617294532",
-                Copies = 3
+                Title = title,
+                Author = author,
+                ISBN = ISBN,
+                Copies = copies
             };
             Book.AddBook(newBook);
         }
