@@ -33,14 +33,18 @@ namespace LibraryApp
                 Console.WriteLine("Are you an admin? (yes/no)");
                 bool isAdmin = Console.ReadLine().ToLower() == "yes";
 
-                user = User.GetUser(username, password, isAdmin);
+                user = User.GetUser(username, password);
 
-                if (user == null)
+                if (user != null)
                 {
                     Console.WriteLine($"Admin access granted!\nWelcome, {user.Username}\n");
                     Book book = new Book();
                     BookMenuItem menuItem = new BookMenuItem(book);
                     menuItem.Select();
+                }
+                else
+                {
+
                 }
 
             }
