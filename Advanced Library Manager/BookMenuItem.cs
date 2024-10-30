@@ -28,7 +28,7 @@ namespace Advanced_Library_Manager
 
         public override string MenuText()
         {
-            return "Library";
+            return "Admin Menu";
         }
     }
 }
