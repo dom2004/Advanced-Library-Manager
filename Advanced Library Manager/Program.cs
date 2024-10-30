@@ -14,25 +14,35 @@ namespace LibraryApp
             Console.WriteLine("Library Management System.");
 
             Book.InitializeDatabase();
+            User.InitializeDatabase();
 
-            Console.WriteLine("Enter your username");
-            string username = Console.ReadLine();
+            Console.WriteLine("Do you have an account? (yes/no)");
+            string accountResponse = Console.ReadLine().ToLower();
+            bool hasAccount = accountResponse == "yes";
 
-            Console.WriteLine("Are you an admin? (Y/N)");
-            bool isAdmin = Console.ReadLine().ToLower() == "yes";
+            User user;
 
-            User user = new User(1, username, isAdmin);
-
-            if (user.isAdmin)
+            if (hasAccount)
             {
-                Console.WriteLine($"Admin granted!\nWelcome {username}\n");
-                Book book = new Book();
-                BookMenuItem menuItem = new BookMenuItem(book);
-                menuItem.Select();
-            }
-            else
-            {
-                Console.WriteLine("Welcome User!");
+                Console.WriteLine("Enter your username");
+                string username = Console.ReadLine();
+
+                Console.WriteLine("Enter your password");
+                string password = Console.ReadLine();
+
+                Console.WriteLine("Are you an admin? (yes/no)");
+                bool isAdmin = Console.ReadLine().ToLower() == "yes";
+
+                user = User.GetUser(username, password, isAdmin);
+
+                if (user == null)
+                {
+                    Console.WriteLine($"Admin access granted!\nWelcome, {user.Username}\n");
+                    Book book = new Book();
+                    BookMenuItem menuItem = new BookMenuItem(book);
+                    menuItem.Select();
+                }
+
             }
 
         }
