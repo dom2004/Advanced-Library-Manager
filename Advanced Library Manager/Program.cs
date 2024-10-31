@@ -2,6 +2,8 @@
 using System;
 using System.Security.Cryptography.X509Certificates;
 using System.Data.SQLite;
+using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.InteropServices.Marshalling;
 using Advanced_Library_Manager;
 
@@ -44,7 +46,9 @@ namespace LibraryApp
                     else
                     {
                         Console.WriteLine($"Welcome, {user.UserName}\n");
-                    
+                        Book book = new Book();
+                        UserMenuItem menuItem = new UserMenuItem(book);
+                        menuItem.Select();
                     }
                 }
                 else
@@ -70,6 +74,15 @@ namespace LibraryApp
                 Console.WriteLine("Welcome, {0}\n", user.UserName);
                 Console.WriteLine("Please restart the program ...");
             }
+        }
+
+        public static void ProgramRestart()
+        {
+            string exePath = Assembly.GetExecutingAssembly().Location;
+            
+            Process.Start(exePath);
+            
+            Process.GetCurrentProcess().Kill();
         }
 
     }
