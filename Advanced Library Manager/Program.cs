@@ -30,25 +30,46 @@ namespace LibraryApp
                 Console.WriteLine("Enter your password");
                 string password = Console.ReadLine();
 
-                Console.WriteLine("Are you an admin? (yes/no)");
-                bool isAdmin = Console.ReadLine().ToLower() == "yes";
-
                 user = User.GetUser(username, password);
 
                 if (user != null)
                 {
-                    Console.WriteLine($"Admin access granted!\nWelcome, {user.Username}\n");
-                    Book book = new Book();
-                    BookMenuItem menuItem = new BookMenuItem(book);
-                    menuItem.Select();
+                    if (user.isAdmin)
+                    {
+                        Console.WriteLine($"Admin access granted!\nWelcome, {user.UserName}\n");
+                        Book book = new Book();
+                        BookMenuItem menuItem = new BookMenuItem(book);
+                        menuItem.Select();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Welcome, {user.UserName}\n");
+                    
+                    }
                 }
                 else
                 {
-
+                    Console.WriteLine("Invalid username or password");
                 }
-
             }
+            else
+            {
+                Console.WriteLine("Enter a new Username");
+                string username = Console.ReadLine();
+                
+                Console.WriteLine("Enter a new Password");
+                string password = Console.ReadLine();
+                
+                Console.WriteLine("Are you an admin? (yes/no)");
+                bool isAdmin = Console.ReadLine().ToLower() == "yes";
 
+
+                user = new User(username, password, isAdmin);
+                User.AddUser(user);
+                
+                Console.WriteLine("Welcome, {0}\n", user.UserName);
+                Console.WriteLine("Please restart the program ...");
+            }
         }
 
     }

@@ -16,7 +16,7 @@ namespace Advanced_Library_Manager
         public int ID { get; set; }
         public string UserName { get; set; }
 
-        public string Password { get; set; }
+        private string Password { get; set; }
         public bool isAdmin { get; set; }
 
         private List<User> users;
@@ -68,31 +68,31 @@ namespace Advanced_Library_Manager
             }
         }
 
-        public static List<User> GetUser()
+        public static User GetUser(string username, string password)
         {
-            var users = new List<User>();
             using (var connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
-                var readDbCmd = connection.CreateCommand();
-                readDbCmd.CommandText = "SELECT * FROM Users";
+                var getUserCmd = connection.CreateCommand();
+                getUserCmd.CommandText = "SELECT * FROM Users WHERE Username = $username AND Password = $password";
+                getUserCmd.Parameters.AddWithValue("$username", username);
+                getUserCmd.Parameters.AddWithValue("$password", password);
 
-                using (var reader = readDbCmd.ExecuteReader())
+                using (var reader = getUserCmd.ExecuteReader())
                 {
-                    while (reader.Read())
+                    if (reader.Read())
                     {
-                        users.Add(new User
-                        (
-                            reader.GetInt32(0),               
-                            reader.GetString(1),              
-                            reader.GetString(2),              
-                            reader.GetBoolean(3)              
-                        ));
+                        return new User(
+                            reader.GetInt32(0),             
+                            reader.GetString(1),             
+                            reader.GetString(2),             
+                            reader.GetBoolean(3)            
+                        );
+
                     }
                 }
             }
-
-            return users;
+            return null;
         }
 
         public User(int ID, string userName, string password, bool isAdmin)
@@ -100,6 +100,13 @@ namespace Advanced_Library_Manager
             ID = ID;
             UserName = userName;
             Password = password;
+            this.isAdmin = isAdmin;
+        }
+        
+        public User(string username, string password, bool isAdmin)
+        {
+            this.UserName = username;
+            this.Password = password;
             this.isAdmin = isAdmin;
         }
     }
